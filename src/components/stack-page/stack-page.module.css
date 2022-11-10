@@ -1,0 +1,13 @@
+.circleRow {
+    padding-top: 120px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.inputForm {
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    max-width: 567px;
+}
