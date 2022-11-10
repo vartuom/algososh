@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, MouseEvent, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {Button} from "../ui/button/button";
@@ -79,7 +79,7 @@ export const SortingPage: React.FC = () => {
                 arr[j + 1].state = ElementStates.Changing;
                 setArr([...arr]);
                 await animationDelay(500);
-                if (isAscending ? left < right : left > right) {
+                if (isAscending ? left > right : left < right) {
                     arr[j].value = right;
                     arr[j + 1].value = left;
                 }
@@ -95,10 +95,26 @@ export const SortingPage: React.FC = () => {
     return (
         <SolutionLayout title="Сортировка массива">
             <form className={styles.inputForm}>
-                <RadioInput label={"Выбор"} disabled={isPending} value={"select"} checked={!isBubble} onChange={handleRadioInput}/>
-                <RadioInput label={"Пузырек"} disabled={isPending} value={"bubble"} checked={isBubble} onChange={handleRadioInput}/>
-                <Button text={"По возрастанию"} sorting={Direction.Ascending} isLoader={isPending} onClick={() => selectionSort(arr, true)}/>
-                <Button text={"По убыванию"} sorting={Direction.Descending} onClick={() => bubbleSort(arr, false)} isLoader={isPending}/>
+                <fieldset className={styles.radioSet}>
+                    <RadioInput label={"Выбор"} disabled={isPending} value={"select"} checked={!isBubble} onChange={handleRadioInput}/>
+                    <RadioInput label={"Пузырек"} disabled={isPending} value={"bubble"} checked={isBubble} onChange={handleRadioInput}/>
+                </fieldset>
+                <fieldset className={styles.buttonSet}>
+                    <Button
+                        text={"По возрастанию"}
+                        name={"ASC"}
+                        sorting={Direction.Ascending}
+                        isLoader={isPending}
+                        onClick={() => isBubble ? bubbleSort(arr, true): selectionSort(arr, true)}
+                    />
+                    <Button
+                        text={"По убыванию"}
+                        name={"DESC"}
+                        sorting={Direction.Descending}
+                        onClick={() => isBubble ? bubbleSort(arr, false): selectionSort(arr, false)}
+                        isLoader={isPending}
+                    />
+                </fieldset>
                 <Button text={"Новый массив"} onClick={generateRandomArray} isLoader={isPending}/>
             </form>
             <div className={styles.columnsRow}>
