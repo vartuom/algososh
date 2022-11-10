@@ -33,7 +33,7 @@ export const SortingPage: React.FC = () => {
         setIsPending(false)
     }
 
-    const swap = (arr: Array<IArrElement>, firstIndex: number, secondIndex: number): void => {
+    const swap = (arr: Array<IArrElement>, firstIndex: number, secondIndex: number) => {
         const temp = arr[firstIndex];
         arr[firstIndex] = arr[secondIndex];
         arr[secondIndex] = temp;
@@ -45,29 +45,52 @@ export const SortingPage: React.FC = () => {
         for (let i = 0; i < arrLength; i++) {
             //индекс максимального или минимального элемента
             //в зависимости от направления сортировки
-            let chosenIndex = i;
-            arr[chosenIndex].state = ElementStates.Changing;
+            let selectedIndex = i;
+            arr[selectedIndex].state = ElementStates.Changing;
             for (let j = i + 1; j < arrLength; j++) {
                 arr[j].state = ElementStates.Changing;
                 setArr([...arr]);
                 await animationDelay(500);
-                if (isAscending ? arr[j].value < arr[chosenIndex].value : arr[j].value > arr[chosenIndex].value) {
-                    chosenIndex = j;
+                if (isAscending ? arr[j].value < arr[selectedIndex].value : arr[j].value > arr[selectedIndex].value) {
+                    selectedIndex = j;
                     arr[j].state = ElementStates.Changing;
-                    arr[chosenIndex].state = i === chosenIndex ? ElementStates.Changing : ElementStates.Default;
+                    arr[selectedIndex].state = i === selectedIndex ? ElementStates.Changing : ElementStates.Default;
                 }
-                if (j !== chosenIndex) {
-                    arr[j].state = ElementStates.Default;
-                }
+                if (j !== selectedIndex) arr[j].state = ElementStates.Default;
                 setArr([...arr]);
             }
-            swap(arr, chosenIndex, i);
-            arr[chosenIndex].state = ElementStates.Default;
+            swap(arr, selectedIndex, i);
+            arr[selectedIndex].state = ElementStates.Default;
             arr[i].state = ElementStates.Modified;
             setArr([...arr]);
         }
         setIsPending(false);
     };
+
+    const bubbleSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
+        const arrLength = arr.length;
+        let left;
+        let right;
+        for (let i = 0; i < arrLength; i++) {
+            for (let j = 0; j < arrLength - i - 1; j++) {
+                left = arr[j].value;
+                right = arr[j + 1].value;
+                arr[j].state = ElementStates.Changing;
+                arr[j + 1].state = ElementStates.Changing;
+                setArr([...arr]);
+                await animationDelay(500);
+                if (isAscending ? left < right : left > right) {
+                    arr[j].value = right;
+                    arr[j + 1].value = left;
+                }
+                arr[j].state = ElementStates.Default;
+                if (arr[j + 1]) arr[j + 1].state = ElementStates.Default;
+                setArr([...arr]);
+            }
+            arr[arrLength - i - 1].state = ElementStates.Modified;
+            setArr([...arr])
+        }
+    }
 
     return (
         <SolutionLayout title="Сортировка массива">
@@ -75,7 +98,7 @@ export const SortingPage: React.FC = () => {
                 <RadioInput label={"Выбор"} disabled={isPending} value={"select"} checked={!isBubble} onChange={handleRadioInput}/>
                 <RadioInput label={"Пузырек"} disabled={isPending} value={"bubble"} checked={isBubble} onChange={handleRadioInput}/>
                 <Button text={"По возрастанию"} sorting={Direction.Ascending} isLoader={isPending} onClick={() => selectionSort(arr, true)}/>
-                <Button text={"По убыванию"} sorting={Direction.Descending} onClick={() => selectionSort(arr, false)} isLoader={isPending}/>
+                <Button text={"По убыванию"} sorting={Direction.Descending} onClick={() => bubbleSort(arr, false)} isLoader={isPending}/>
                 <Button text={"Новый массив"} onClick={generateRandomArray} isLoader={isPending}/>
             </form>
             <div className={styles.columnsRow}>
