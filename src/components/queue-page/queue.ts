@@ -35,7 +35,7 @@ export class Queue<T> implements IQueue<T> {
             throw new Error("No elements in the queue");
         }
         this.container[this.head % this.size] = undefined;
-        this.head++
+        this.head++;
         this.length--;
     };
 

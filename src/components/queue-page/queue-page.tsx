@@ -16,6 +16,8 @@ export const QueuePage: React.FC = () => {
     const [value, setValue] = useState('');
     const [isPending, setIsPending] = useState(false);
     const [isHighlight, setIsHighlight] = useState(false);
+    const [curr, setCurr] = useState(-1);
+    const [tail, setTail] = useState(queue.getTail())
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
@@ -23,12 +25,28 @@ export const QueuePage: React.FC = () => {
 
     const enqueue = async () => {
         setIsPending(true);
+        setTail(queue.getTail() % queue.getSize());
+        setCurr(queue.getTail() % queue.getSize());
         queue.enqueue(value);
-        setValue('')
         setQueueArr([...queue.getQueue()]);
+        setValue('')
         setIsHighlight(true)
         await animationDelay(500);
+        setCurr(-1)
         setIsHighlight(false);
+        setIsPending(false);
+    }
+
+    const dequeue = async () => {
+        setIsPending(true);
+        setIsHighlight(true)
+        setCurr(queue.getHead() % queue.getSize());
+        await animationDelay(500);
+        setIsHighlight(false);
+        queue.dequeue();
+        setQueueArr([...queue.getQueue()]);
+        setCurr(queue.getHead());
+        setCurr(-1);
         setIsPending(false);
     }
 
@@ -40,23 +58,23 @@ export const QueuePage: React.FC = () => {
                 <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                        isLimitText={true}/>
                 <Button text={"Добавить"} isLoader={isPending} onClick={enqueue}/>
-                <Button text={"Удалить"} isLoader={isPending} onClick={() => {}}/>
+                <Button text={"Удалить"} isLoader={isPending} onClick={dequeue}/>
                 <Button text={"Очистить"} isLoader={isPending} onClick={() => {
                     queue.clear();
                     setQueueArr(queue.getQueue);
                 }}/>
             </form>
             <div className={styles.circleRow}>
-                {queueArr.map((item, index: number, array) => {
+                {queueArr.map((item, index: number) => {
                     return (
                         <Circle
                             key={index}
                             index={index}
                             letter={item}
-                            state={isHighlight ? index === queue.getTail() - 1 % queue.getSize() ? ElementStates.Changing : ElementStates.Default : ElementStates.Default}
+                            state={isHighlight ? index === curr ? ElementStates.Changing : ElementStates.Default : ElementStates.Default}
                             //state={ElementStates.Default}
-                            head={queue.isEmpty() ? "" : queue.getHead() === index ? "head" : ""}
-                            tail={queue.isEmpty() ? "" : queue.getTail() - 1 === index ? "tail" : ""}
+                            head={queue.isEmpty() ? "" : queue.getHead() % queue.getSize() === index ? "head" : ""}
+                            tail={queue.isEmpty() ? "" : tail === index ? "tail" : ""}
                         />)
                 })}
             </div>
