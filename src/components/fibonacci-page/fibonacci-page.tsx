@@ -19,6 +19,7 @@ export const FibonacciPage: React.FC = () => {
     const getFibSequence = async (n: string) => {
         const lastElement = parseInt(n);
         if (typeof lastElement === 'number' && lastElement > 0) {
+            setValue("");
             setIsPending(true);
             await animationDelay(500);
             const tempArr = [1];
@@ -52,7 +53,7 @@ export const FibonacciPage: React.FC = () => {
                 getFibSequence(value);
             }}>
                 <Input value={value} onChange={onChange} placeholder={"Введите текст"} type={'number'} max={'20'}
-                       isLimitText={true}/>
+                       isLimitText={true} disabled={isPending}/>
                 <Button type={"submit"} text={"Рассчитать"} isLoader={isPending}/>
             </form>
             <div className={styles.circleRow}>

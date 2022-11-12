@@ -1,5 +1,5 @@
 .circleRow {
-    padding-top: 120px;
+    padding-top: 90px;
     display: flex;
     justify-content: center;
     gap: 16px;
@@ -25,8 +25,28 @@
 }
 
 .inputForm {
-    margin: 0 auto;
     display: flex;
-    gap: 12px;
-    max-width: 567px;
+    justify-content: center;
+}
+
+.inputField {
+    width: 204px;
+}
+
+.btnNormal {
+    width: 175px
+}
+
+.btnWide {
+    width: 362px
+}
+
+.controlSet {
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 12px;
+    row-gap: 12px;
+    width: 952px;
 }

@@ -16,7 +16,7 @@ interface IArrElement {
 export const SortingPage: React.FC = () => {
 
     const [arr, setArr] = useState([] as Array<IArrElement>);
-    const [isPending, setIsPending] = useState(false);
+    const [isPending, setIsPending] = useState("");
     const [isBubble, setIsBubble] = useState(false)
 
     const handleRadioInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,13 +24,15 @@ export const SortingPage: React.FC = () => {
     }
 
     const generateRandomArray = () => {
-        setIsPending(true)
+        setIsPending("rand")
         const randomArr = Array.from(
             {length: 7},
-            () => {return {value: Math.floor(Math.random()*101), state: ElementStates.Default}}
+            () => {
+                return {value: Math.floor(Math.random() * 101), state: ElementStates.Default}
+            }
         );
         setArr([...randomArr])
-        setIsPending(false)
+        setIsPending("")
     }
 
     const swap = (arr: Array<IArrElement>, firstIndex: number, secondIndex: number) => {
@@ -40,7 +42,7 @@ export const SortingPage: React.FC = () => {
     };
 
     const selectionSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
-        setIsPending(true);
+        setIsPending(isAscending ? "ASC" : "DESC");
         const arrLength = arr.length;
         for (let i = 0; i < arrLength; i++) {
             //индекс максимального или минимального элемента
@@ -64,10 +66,11 @@ export const SortingPage: React.FC = () => {
             arr[i].state = ElementStates.Modified;
             setArr([...arr]);
         }
-        setIsPending(false);
+        setIsPending("");
     };
 
     const bubbleSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
+        setIsPending(isAscending ? "ASC" : "DESC");
         const arrLength = arr.length;
         let left;
         let right;
@@ -90,32 +93,39 @@ export const SortingPage: React.FC = () => {
             arr[arrLength - i - 1].state = ElementStates.Modified;
             setArr([...arr])
         }
+        setIsPending("");
     }
 
     return (
         <SolutionLayout title="Сортировка массива">
             <form className={styles.inputForm}>
                 <fieldset className={styles.radioSet}>
-                    <RadioInput label={"Выбор"} disabled={isPending} value={"select"} checked={!isBubble} onChange={handleRadioInput}/>
-                    <RadioInput label={"Пузырек"} disabled={isPending} value={"bubble"} checked={isBubble} onChange={handleRadioInput}/>
+                    <RadioInput label={"Выбор"} disabled={isPending === "" ? false : true} value={"select"}
+                                checked={!isBubble} onChange={handleRadioInput}/>
+                    <RadioInput label={"Пузырек"} disabled={isPending === "" ? false : true} value={"bubble"}
+                                checked={isBubble} onChange={handleRadioInput}/>
                 </fieldset>
-                <fieldset className={styles.buttonSet}>
+                <fieldset className={styles.buttonSet} disabled={isPending === "" ? false : true}>
                     <Button
                         text={"По возрастанию"}
                         name={"ASC"}
                         sorting={Direction.Ascending}
-                        isLoader={isPending}
-                        onClick={() => isBubble ? bubbleSort(arr, true): selectionSort(arr, true)}
+                        onClick={() => isBubble ? bubbleSort(arr, true) : selectionSort(arr, true)}
+                        isLoader={isPending === "ASC" ? true : false}
+                        extraClass={styles.btnNormal}
                     />
                     <Button
                         text={"По убыванию"}
                         name={"DESC"}
                         sorting={Direction.Descending}
-                        onClick={() => isBubble ? bubbleSort(arr, false): selectionSort(arr, false)}
-                        isLoader={isPending}
+                        onClick={() => isBubble ? bubbleSort(arr, false) : selectionSort(arr, false)}
+                        isLoader={isPending === "DESC" ? true : false}
+                        extraClass={styles.btnNormal}
                     />
                 </fieldset>
-                <Button text={"Новый массив"} onClick={generateRandomArray} isLoader={isPending}/>
+                <Button text={"Новый массив"} onClick={generateRandomArray}
+                        isLoader={isPending === "rand" ? true : false} extraClass={styles.btnNormal}
+                        disabled={isPending === "" ? false : true}/>
             </form>
             <div className={styles.columnsRow}>
                 {arr.map((element, index) => {

@@ -14,7 +14,7 @@ export const QueuePage: React.FC = () => {
 
     const [queueArr, setQueueArr] = useState(queue.getQueue());
     const [value, setValue] = useState('');
-    const [isPending, setIsPending] = useState(false);
+    const [isPending, setIsPending] = useState("");
     const [isHighlight, setIsHighlight] = useState(false);
     const [curr, setCurr] = useState(-1);
     const [tail, setTail] = useState(queue.getTail())
@@ -24,7 +24,7 @@ export const QueuePage: React.FC = () => {
     };
 
     const enqueue = async () => {
-        setIsPending(true);
+        setIsPending("enqueue");
         setTail(queue.getTail() % queue.getSize());
         setCurr(queue.getTail() % queue.getSize());
         queue.enqueue(value);
@@ -34,11 +34,11 @@ export const QueuePage: React.FC = () => {
         await animationDelay(500);
         setCurr(-1)
         setIsHighlight(false);
-        setIsPending(false);
+        setIsPending("");
     }
 
     const dequeue = async () => {
-        setIsPending(true);
+        setIsPending("dequeue");
         setIsHighlight(true)
         setCurr(queue.getHead() % queue.getSize());
         await animationDelay(500);
@@ -47,7 +47,7 @@ export const QueuePage: React.FC = () => {
         setQueueArr([...queue.getQueue()]);
         setCurr(queue.getHead());
         setCurr(-1);
-        setIsPending(false);
+        setIsPending("");
     }
 
     return (
@@ -55,14 +55,16 @@ export const QueuePage: React.FC = () => {
             <form className={styles.inputForm} onSubmit={e => {
                 e.preventDefault()
             }}>
-                <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
-                       isLimitText={true}/>
-                <Button text={"Добавить"} isLoader={isPending} onClick={enqueue}/>
-                <Button text={"Удалить"} isLoader={isPending} onClick={dequeue}/>
-                <Button text={"Очистить"} isLoader={isPending} onClick={() => {
-                    queue.clear();
-                    setQueueArr(queue.getQueue);
-                }}/>
+                <fieldset className={styles.controlSet} disabled={isPending === "" ? false : true}>
+                    <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
+                           isLimitText={true} extraClass={styles.inputField}/>
+                    <Button text={"Добавить"} isLoader={isPending === "enqueue" ? true : false} onClick={enqueue}/>
+                    <Button text={"Удалить"} isLoader={isPending === "dequeue" ? true : false} onClick={dequeue}/>
+                    <Button text={"Очистить"} onClick={() => {
+                        queue.clear();
+                        setQueueArr(queue.getQueue);
+                    }}/>
+                </fieldset>
             </form>
             <div className={styles.circleRow}>
                 {queueArr.map((item, index: number) => {

@@ -61,7 +61,7 @@ export const StringComponent: React.FC = () => {
         e.preventDefault()
         reverseString();
       }}>
-        <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={11} isLimitText={true}/>
+        <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={11} isLimitText={true} disabled={isPending}/>
         <Button type={"submit"} text={"Развернуть"} isLoader={isPending}/>
       </form>
       <div className={styles.circleRow}>

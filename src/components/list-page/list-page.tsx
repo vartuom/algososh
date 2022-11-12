@@ -36,9 +36,9 @@ const initListArr: Array<IListArrItem> = list.print().map((item) => ({
 
 export const ListPage: React.FC = () => {
 
-    const [value, setValue] = useState('');
-    const [indexValue, setIndexValue] = useState('');
-    const [isPending, setIsPending] = useState(false);
+    const [value, setValue] = useState("");
+    const [indexValue, setIndexValue] = useState("");
+    const [isPending, setIsPending] = useState("");
     const [listArr, setListArr] = useState(initListArr);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +50,7 @@ export const ListPage: React.FC = () => {
     };
 
     const append = async () => {
-        setIsPending(true);
+        setIsPending("append");
         list.append(value);
         listArr[listArr.length - 1] = {
             ...listArr[listArr.length - 1],
@@ -76,11 +76,11 @@ export const ListPage: React.FC = () => {
         await animationDelay(500);
         listArr[listArr.length - 1].state = ElementStates.Default;
         setListArr([...listArr]);
-        setIsPending(false);
+        setIsPending("");
     }
 
     const pop = async () => {
-        setIsPending(true);
+        setIsPending("pop");
         listArr[listArr.length - 1] = {
             ...listArr[listArr.length - 1],
             value: "",
@@ -94,11 +94,11 @@ export const ListPage: React.FC = () => {
         await animationDelay(500);
         listArr.pop();
         setListArr([...listArr]);
-        setIsPending(false);
+        setIsPending("");
     }
 
     const prepend = async () => {
-        setIsPending(true);
+        setIsPending("prepend");
         list.prepend(value);
         listArr[0].smallElement = {
             value: value,
@@ -117,11 +117,11 @@ export const ListPage: React.FC = () => {
         await animationDelay(500);
         listArr[0].state = ElementStates.Default;
         setListArr([...listArr])
-        setIsPending(false);
+        setIsPending("");
     }
 
     const dropHead = async () => {
-        setIsPending(true);
+        setIsPending("dropHead");
         listArr[0] = {
             ...listArr[0],
             value: "",
@@ -135,11 +135,11 @@ export const ListPage: React.FC = () => {
         await animationDelay(500);
         listArr.shift();
         setListArr([...listArr]);
-        setIsPending(false);
+        setIsPending("");
     }
 
     const addAtIndex = async () => {
-        setIsPending(true);
+        setIsPending("addAtIndex");
         const index = parseInt(indexValue)
         list.addByIndex(value, index)
         for (let i = 0; i <= index; i++) {
@@ -154,8 +154,8 @@ export const ListPage: React.FC = () => {
             await animationDelay(500);
             setListArr([...listArr]);
             if (i > 0) {
-                listArr[i-1] = {
-                    ...listArr[i-1],
+                listArr[i - 1] = {
+                    ...listArr[i - 1],
                     smallElement: undefined
                 }
             }
@@ -181,11 +181,11 @@ export const ListPage: React.FC = () => {
         setListArr([...listArr]);
         setValue("");
         setIndexValue("");
-        setIsPending(false);
+        setIsPending("");
     }
 
     const deleteAtIndex = async () => {
-        setIsPending(true);
+        setIsPending("deleteAtIndex");
         const index = parseInt(indexValue);
         list.deleteByIndex(index);
         for (let i = 0; i <= index; i++) {
@@ -221,7 +221,7 @@ export const ListPage: React.FC = () => {
         await animationDelay(500);
         setListArr([...listArr]);
         setIndexValue("");
-        setIsPending(false);
+        setIsPending("");
     }
 
     return (
@@ -229,21 +229,24 @@ export const ListPage: React.FC = () => {
             <form className={styles.inputForm} onSubmit={e => {
                 e.preventDefault()
             }}>
-                <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
-                       isLimitText={true}/>
-                <Button text={"Добавить в tail"} isLoader={isPending} onClick={append}/>
-                <Button text={"Удалить из tail"} isLoader={isPending} onClick={pop}/>
-                <Button text={"Добавить в head"} isLoader={isPending} onClick={prepend}/>
-                <Button text={"Удалить из head"} isLoader={isPending} onClick={dropHead}/>
-                <Button text={"Очистить"} isLoader={isPending} onClick={() => {
-                }}/>
-            </form>
-            <form className={styles.inputForm} onSubmit={e => {
-                e.preventDefault()
-            }}>
-                <Input value={indexValue} onChange={onChangeIndex} placeholder={"Введите индекс"}/>
-                <Button text={"Добавить по индексу"} isLoader={isPending} onClick={addAtIndex}/>
-                <Button text={"Удалить по индексу"} isLoader={isPending} onClick={deleteAtIndex}/>
+                <fieldset className={styles.controlSet} disabled={isPending === "" ? false : true}>
+                    <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
+                           isLimitText={true} extraClass={styles.inputField}/>
+                    <Button text={"Добавить в head"} name={"prepend"} onClick={prepend}
+                            extraClass={styles.btnNormal} isLoader={isPending === "prepend" ? true : false}/>
+                    <Button text={"Добавить в tail"} name={"append"} onClick={append}
+                            extraClass={styles.btnNormal} isLoader={isPending === "append" ? true : false}/>
+                    <Button text={"Удалить из head"} name={"dropHead"} onClick={dropHead}
+                            extraClass={styles.btnNormal} isLoader={isPending === "dropHead" ? true : false}/>
+                    <Button text={"Удалить из tail"} name={"pop"} onClick={pop}
+                            extraClass={styles.btnNormal} isLoader={isPending === "pop" ? true : false}/>
+                    <Input value={indexValue} onChange={onChangeIndex} placeholder={"Введите индекс"}
+                           extraClass={styles.inputField}/>
+                    <Button text={"Добавить по индексу"} onClick={addAtIndex}
+                            extraClass={styles.btnWide} isLoader={isPending === "addAtIndex" ? true : false}/>
+                    <Button text={"Удалить по индексу"} onClick={deleteAtIndex}
+                            extraClass={styles.btnWide} isLoader={isPending === "deleteAtIndex" ? true : false}/>
+                </fieldset>
             </form>
             <div className={styles.circleRow}>
                 {listArr.map((item, index: number, array) => {

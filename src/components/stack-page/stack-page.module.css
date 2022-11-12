@@ -6,8 +6,23 @@
 }
 
 .inputForm {
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.controlSet {
     display: flex;
     gap: 12px;
     max-width: 567px;
+    border: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.inputField {
+    width: 377px;
+}
+
+.clearBtn {
+    margin-left: 80px;
 }
