@@ -36,6 +36,20 @@ export class LinkedList<T> implements ILinkedList<T> {
         this.size++;
     }
 
+    deleteTail() {
+        let current;
+        if (!this.head?.next) {
+            this.head = null;
+        } else {
+            current = this.head;
+            while (current.next?.next) {
+                current = current.next;
+            }
+            current.next = null;
+        }
+        this.size--;
+    }
+
 
     print() {
         let curr = this.head;

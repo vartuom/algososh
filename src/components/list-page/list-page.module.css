@@ -6,9 +6,22 @@
 }
 
 .circleWrapper {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
+}
+
+.smallTop {
+    position: absolute;
+    top: -68px;
+    left: 12px;
+}
+
+.smallBottom {
+    position: absolute;
+    top: 112px;
+    left: 12px;
 }
 
 .inputForm {
