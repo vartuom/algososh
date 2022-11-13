@@ -8,7 +8,7 @@ import {ElementStates} from "../../types/element-states";
 import {Queue} from "./queue";
 import {animationDelay} from "../../utils/utils";
 
-const queue = new Queue<string>(3);
+const queue = new Queue<string>(7);
 
 export const QueuePage: React.FC = () => {
 

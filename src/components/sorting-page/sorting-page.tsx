@@ -8,6 +8,7 @@ import {ElementStates} from "../../types/element-states";
 import {Column} from "../ui/column/column";
 import {animationDelay} from "../../utils/utils";
 import {swap} from "../../utils/utils";
+import {generateRandomObjArray, getRandomNumber} from "./utils/utils";
 
 interface IArrElement {
     value: number,
@@ -16,7 +17,7 @@ interface IArrElement {
 
 export const SortingPage: React.FC = () => {
 
-    const [arr, setArr] = useState([] as Array<IArrElement>);
+    const [arr, setArr] = useState([...generateRandomObjArray(getRandomNumber(3, 17))] as Array<IArrElement>);
     const [isPending, setIsPending] = useState("");
     const [isBubble, setIsBubble] = useState(false)
 
@@ -24,15 +25,9 @@ export const SortingPage: React.FC = () => {
         setIsBubble(e.target.value === "bubble" ? true : false);
     }
 
-    const generateRandomArray = () => {
+    const handleNewArrButton = () => {
         setIsPending("rand")
-        const randomArr = Array.from(
-            {length: 7},
-            () => {
-                return {value: Math.floor(Math.random() * 101), state: ElementStates.Default}
-            }
-        );
-        setArr([...randomArr])
+        setArr([...generateRandomObjArray(getRandomNumber(3, 17))])
         setIsPending("")
     }
 
@@ -118,7 +113,7 @@ export const SortingPage: React.FC = () => {
                         extraClass={styles.btnNormal}
                     />
                 </fieldset>
-                <Button text={"Новый массив"} onClick={generateRandomArray}
+                <Button text={"Новый массив"} onClick={handleNewArrButton}
                         isLoader={isPending === "rand" ? true : false} extraClass={styles.btnNormal}
                         disabled={isPending === "" ? false : true}/>
             </form>

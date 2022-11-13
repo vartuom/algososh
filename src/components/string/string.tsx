@@ -3,10 +3,10 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
-import {ElementStates} from "../../types/element-states";
 import styles from "./string.module.css"
 import {animationDelay} from "../../utils/utils";
 import {swap} from "../../utils/utils";
+import {getState} from "./utils/utils";
 
 export const StringComponent: React.FC = () => {
 
@@ -18,17 +18,6 @@ export const StringComponent: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
-
-  //определяем цвет кружка на основе индекса следующего кандидата на перестановку
-  const getState = (index: number) => {
-    if (index < currIndex || index > arr.length - 1 - currIndex) {
-      return ElementStates.Modified
-    }
-    if (index === currIndex || index === arr.length - 1 - currIndex) {
-      return ElementStates.Changing
-    }
-    return ElementStates.Default
-  }
 
   const reverseString = async () => {
     //отключаем кнопку
@@ -48,7 +37,6 @@ export const StringComponent: React.FC = () => {
     setIsPending(false);
   }
 
-
   return (
     <SolutionLayout title="Строка">
       <form className={styles.inputForm} onSubmit={e => {
@@ -59,8 +47,8 @@ export const StringComponent: React.FC = () => {
         <Button type={"submit"} text={"Развернуть"} isLoader={isPending}/>
       </form>
       <div className={styles.circleRow}>
-        {arr.map((char, index) => (
-            <Circle key={`${index}-${char}`} letter={char} state={getState(index)}/>
+        {arr.map((char, index, array) => (
+            <Circle key={`${index}-${char}`} letter={char} state={getState(index, currIndex, array)}/>
         ))}
       </div>
     </SolutionLayout>

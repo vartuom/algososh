@@ -8,6 +8,7 @@ import {ElementStates} from "../../types/element-states";
 import {LinkedList} from "./linkedList";
 import {ArrowIcon} from "../ui/icons/arrow-icon";
 import {animationDelay} from "../../utils/utils";
+import {generateRandomNumArray} from "./utils/utils";
 
 interface ISmallElement {
     value: string,
@@ -20,12 +21,7 @@ interface IListArrItem {
     state: ElementStates;
 }
 
-const randomArr = Array.from(
-    {length: 4},
-    () => {
-        return Math.floor(Math.random() * 101) + ""
-    }
-);
+const randomArr = generateRandomNumArray(4);
 
 const list = new LinkedList<string>(randomArr);
 const initListArr: Array<IListArrItem> = list.toArray().map((item) => ({
