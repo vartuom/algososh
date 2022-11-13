@@ -6,6 +6,7 @@ import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 import styles from "./string.module.css"
 import {animationDelay} from "../../utils/utils";
+import {swap} from "../../utils/utils";
 
 export const StringComponent: React.FC = () => {
 
@@ -17,13 +18,6 @@ export const StringComponent: React.FC = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
-
-  const swap = (arr: Array<string>, i: number, j: number) => {
-    const temp  = arr[i];
-    arr[i] = arr[j];
-    arr[j] = temp;
-    return arr
-  }
 
   //определяем цвет кружка на основе индекса следующего кандидата на перестановку
   const getState = (index: number) => {
@@ -46,7 +40,7 @@ export const StringComponent: React.FC = () => {
       await animationDelay(1000);
       let j = tempArr.length - 1 - i;
       setCurrIndex(i+1);
-      tempArr = swap(tempArr, i, j);
+      swap(tempArr, i, j);
       setArr([...tempArr]);
     }
     //закрашиваем центр, если элементов было нечетное количество

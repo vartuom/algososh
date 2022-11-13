@@ -16,7 +16,7 @@ export const FibonacciPage: React.FC = () => {
         setValue(event.target.value);
     };
 
-    const getFibSequence = async (n: string) => {
+    const getFibonacciNumbers = async (n: string) => {
         const lastElement = parseInt(n);
         if (typeof lastElement === 'number' && lastElement > 0) {
             setValue("");
@@ -50,7 +50,7 @@ export const FibonacciPage: React.FC = () => {
         <SolutionLayout title="Последовательность Фибоначчи">
             <form className={styles.inputForm} onSubmit={e => {
                 e.preventDefault()
-                getFibSequence(value);
+                getFibonacciNumbers(value);
             }}>
                 <Input value={value} onChange={onChange} placeholder={"Введите текст"} type={'number'} max={'20'}
                        isLimitText={true} disabled={isPending}/>

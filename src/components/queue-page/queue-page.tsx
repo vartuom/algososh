@@ -8,7 +8,7 @@ import {ElementStates} from "../../types/element-states";
 import {Queue} from "./queue";
 import {animationDelay} from "../../utils/utils";
 
-const queue = new Queue<string>(4);
+const queue = new Queue<string>(3);
 
 export const QueuePage: React.FC = () => {
 
@@ -35,6 +35,7 @@ export const QueuePage: React.FC = () => {
         setCurr(-1)
         setIsHighlight(false);
         setIsPending("");
+        console.log(tail);
     }
 
     const dequeue = async () => {
@@ -58,9 +59,11 @@ export const QueuePage: React.FC = () => {
                 <fieldset className={styles.controlSet} disabled={isPending === "" ? false : true}>
                     <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                            isLimitText={true} extraClass={styles.inputField}/>
-                    <Button text={"Добавить"} isLoader={isPending === "enqueue" ? true : false} onClick={enqueue}/>
-                    <Button text={"Удалить"} isLoader={isPending === "dequeue" ? true : false} onClick={dequeue}/>
-                    <Button text={"Очистить"} onClick={() => {
+                    <Button text={"Добавить"} isLoader={isPending === "enqueue" ? true : false}
+                            disabled={queue.getSize() == queue.getLength() ? true : false} onClick={enqueue}/>
+                    <Button text={"Удалить"} isLoader={isPending === "dequeue" ? true : false}
+                            disabled={queue.getLength() === 0 ? true : false} onClick={dequeue}/>
+                    <Button text={"Очистить"} disabled={queue.getLength() === 0 ? true : false} onClick={() => {
                         queue.clear();
                         setQueueArr(queue.getQueue);
                     }}/>

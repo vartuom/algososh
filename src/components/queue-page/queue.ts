@@ -1,20 +1,21 @@
 interface IQueue<T> {
     enqueue: (item: T) => void;
     dequeue: () => void;
+    clear: () => void;
     getHead: () => number;
     getTail: () => number;
-    clear: () => void;
     isEmpty: () => boolean;
-    getSize: () => number;
     getQueue: () => Array<T | undefined>;
+    getSize: () => number;
+    getLength: () => number;
 }
 
 export class Queue<T> implements IQueue<T> {
-    private container: (T | undefined)[] = [];
+    private container: Array<T | undefined> = [];
     private head = 0;
     private tail = 0;
-    private readonly size: number = 0;
-    private length: number = 0;
+    private size = 0;
+    private length = 0;
 
     constructor(size: number) {
         this.size = size;
@@ -22,32 +23,16 @@ export class Queue<T> implements IQueue<T> {
     }
 
     enqueue = (item: T) => {
-        if (this.length >= this.size) {
-            throw new Error("Maximum length exceeded");
-        }
         this.container[this.tail % this.size] = item
         this.tail++;
         this.length++;
     };
 
     dequeue = () => {
-        if (this.isEmpty()) {
-            throw new Error("No elements in the queue");
-        }
         this.container[this.head % this.size] = undefined;
         this.head++;
         this.length--;
     };
-
-    getSize = () => this.size;
-
-    isEmpty = () => this.length === 0;
-
-    getHead = () => this.head;
-
-    getTail = () => this.tail;
-
-    getQueue = (): (T | undefined)[] => [...this.container];
 
     clear = () => {
         this.head = 0;
@@ -55,4 +40,11 @@ export class Queue<T> implements IQueue<T> {
         this.length = 0;
         this.container = Array(this.size);
     };
+
+    getSize = () => this.size;
+    getLength = () => this.length;
+    getTail = () => this.tail;
+    getQueue = () => [...this.container];
+    isEmpty = () => this.length === 0;
+    getHead = () => this.head;
 }

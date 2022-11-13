@@ -7,6 +7,7 @@ import {Direction} from "../../types/direction";
 import {ElementStates} from "../../types/element-states";
 import {Column} from "../ui/column/column";
 import {animationDelay} from "../../utils/utils";
+import {swap} from "../../utils/utils";
 
 interface IArrElement {
     value: number,
@@ -34,12 +35,6 @@ export const SortingPage: React.FC = () => {
         setArr([...randomArr])
         setIsPending("")
     }
-
-    const swap = (arr: Array<IArrElement>, firstIndex: number, secondIndex: number) => {
-        const temp = arr[firstIndex];
-        arr[firstIndex] = arr[secondIndex];
-        arr[secondIndex] = temp;
-    };
 
     const selectionSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
         setIsPending(isAscending ? "ASC" : "DESC");
@@ -105,7 +100,7 @@ export const SortingPage: React.FC = () => {
                     <RadioInput label={"Пузырек"} disabled={isPending === "" ? false : true} value={"bubble"}
                                 checked={isBubble} onChange={handleRadioInput}/>
                 </fieldset>
-                <fieldset className={styles.buttonSet} disabled={isPending === "" ? false : true}>
+                <fieldset className={styles.buttonSet} disabled={arr.length === 0 ? true : isPending === "" ? false : true}>
                     <Button
                         text={"По возрастанию"}
                         name={"ASC"}

@@ -28,7 +28,7 @@ const randomArr = Array.from(
 );
 
 const list = new LinkedList<string>(randomArr);
-const initListArr: Array<IListArrItem> = list.print().map((item) => ({
+const initListArr: Array<IListArrItem> = list.toArray().map((item) => ({
     value: item,
     smallElement: undefined,
     state: ElementStates.Default
@@ -60,7 +60,7 @@ export const ListPage: React.FC = () => {
             }
         }
         setListArr([...listArr]);
-        setValue('');
+        setValue("");
         await animationDelay(500);
         listArr[listArr.length - 1] = {
             ...listArr[listArr.length - 1],
@@ -139,8 +139,13 @@ export const ListPage: React.FC = () => {
     }
 
     const addAtIndex = async () => {
-        setIsPending("addAtIndex");
         const index = parseInt(indexValue)
+        if (index === list.getSize()) {
+            setIndexValue("");
+            append();
+            return
+        }
+        setIsPending("addAtIndex");
         list.addByIndex(value, index)
         for (let i = 0; i <= index; i++) {
             listArr[i] = {
@@ -233,30 +238,38 @@ export const ListPage: React.FC = () => {
                     <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                            isLimitText={true} extraClass={styles.inputField}/>
                     <Button text={"Добавить в head"} name={"prepend"} onClick={prepend}
-                            extraClass={styles.btnNormal} isLoader={isPending === "prepend" ? true : false}/>
+                            extraClass={styles.btnNormal} isLoader={isPending === "prepend" ? true : false}
+                            disabled={!value}/>
                     <Button text={"Добавить в tail"} name={"append"} onClick={append}
-                            extraClass={styles.btnNormal} isLoader={isPending === "append" ? true : false}/>
+                            extraClass={styles.btnNormal} isLoader={isPending === "append" ? true : false}
+                            disabled={!value}/>
                     <Button text={"Удалить из head"} name={"dropHead"} onClick={dropHead}
-                            extraClass={styles.btnNormal} isLoader={isPending === "dropHead" ? true : false}/>
+                            extraClass={styles.btnNormal} isLoader={isPending === "dropHead" ? true : false}
+                            disabled={list.getSize() === 0 ? true : false}/>
                     <Button text={"Удалить из tail"} name={"pop"} onClick={pop}
-                            extraClass={styles.btnNormal} isLoader={isPending === "pop" ? true : false}/>
+                            extraClass={styles.btnNormal} isLoader={isPending === "pop" ? true : false}
+                            disabled={list.getSize() === 0 ? true : false}/>
                     <Input value={indexValue} onChange={onChangeIndex} placeholder={"Введите индекс"}
                            extraClass={styles.inputField}/>
                     <Button text={"Добавить по индексу"} onClick={addAtIndex}
-                            extraClass={styles.btnWide} isLoader={isPending === "addAtIndex" ? true : false}/>
+                            extraClass={styles.btnWide} isLoader={isPending === "addAtIndex" ? true : false}
+                            disabled={!indexValue || list.getSize() < parseInt(indexValue)}/>
                     <Button text={"Удалить по индексу"} onClick={deleteAtIndex}
-                            extraClass={styles.btnWide} isLoader={isPending === "deleteAtIndex" ? true : false}/>
+                            extraClass={styles.btnWide} isLoader={isPending === "deleteAtIndex" ? true : false}
+                            disabled={list.getSize() === 0 ? true : false || !indexValue || list.getSize() - 1 < parseInt(indexValue)}/>
                 </fieldset>
             </form>
             <div className={styles.circleRow}>
                 {listArr.map((item, index: number, array) => {
                     return (
-                        <div className={styles.circleWrapper}>
+                        <div className={styles.circleWrapper} key={index}>
                             <Circle
                                 key={index}
                                 index={index}
                                 letter={item.value}
                                 state={item.state}
+                                head={index === 0 ? "head" : ""}
+                                tail={index === list.getSize() - 1 ? "tail" : ""}
                             />
                             {index < array.length - 1 && <ArrowIcon fill={"#0032FF"}/>}
                             {item.smallElement && <div

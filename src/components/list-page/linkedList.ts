@@ -3,13 +3,19 @@ export class Node<T> {
     next: Node<T> | null
     constructor(value: T, next?: Node<T> | null) {
         this.value = value;
-        this.next = (next === undefined ? null : next);
+        this.next = (next === undefined ? null : next)
     }
 }
 
 interface ILinkedList<T> {
-    append: (element: T) => void;
-    print: () => void;
+    append: (item: T) => void,
+    toArray: () => Array<T>,
+    deleteTail: () => void,
+    prepend: (item: T) => void,
+    deleteHead: () => void,
+    addByIndex: (item: T, index: number) => void;
+    deleteByIndex: (index: number) => void;
+    getSize: () => void
 }
 
 export class LinkedList<T> implements ILinkedList<T> {
@@ -50,8 +56,8 @@ export class LinkedList<T> implements ILinkedList<T> {
         this.size--;
     }
 
-    prepend(element: T) {
-        const node = new Node(element, this.head);
+    prepend(item: T) {
+        const node = new Node(item, this.head);
         this.head = node;
         this.size++;
     }
@@ -63,11 +69,11 @@ export class LinkedList<T> implements ILinkedList<T> {
         }
     }
 
-    addByIndex(element: T, index: number) {
+    addByIndex(item: T, index: number) {
         if (index < 0 || index > this.size) return;
-        if (!this.head || index <= 0) this.prepend(element);
+        if (!this.head || index <= 0) this.prepend(item);
         else if (index >= (this.size - 1)) {
-            this.append(element);
+            this.append(item);
         } else {
             let current = this.head;
             let currentIndex = 0;
@@ -75,7 +81,7 @@ export class LinkedList<T> implements ILinkedList<T> {
                 current = current.next;
                 currentIndex++;
             }
-            const node = new Node(element, current.next);
+            const node = new Node(item, current.next);
             current.next = node;
             this.size++;
         }
@@ -100,14 +106,15 @@ export class LinkedList<T> implements ILinkedList<T> {
         this.size--;
     }
 
+    getSize = () => this.size;
 
-    print() {
+    toArray() {
         let curr = this.head;
-        let res: T[] = [];
+        let arr: T[] = [];
         while (curr) {
-            res.push(curr.value);
+            arr.push(curr.value);
             curr = curr.next;
         }
-        return res
+        return arr
     }
 }

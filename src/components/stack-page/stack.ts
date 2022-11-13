@@ -2,17 +2,17 @@ interface IStack<T> {
     push: (item: T) => void;
     pop: () => void;
     clear: () => void;
-    getStack: () => T[];
+    getStack: () => Array<T>;
 }
 
 export class Stack<T> implements IStack<T> {
-    private container: T[] = [];
+    private container = [] as Array<T>;
 
-    push = (item: T): void => {
+    push = (item: T) => {
         this.container.push(item)
     };
 
-    pop = (): void => {
+    pop = () => {
         this.container.pop()
     };
 
