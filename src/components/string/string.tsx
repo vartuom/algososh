@@ -5,8 +5,7 @@ import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
 import styles from "./string.module.css"
 import {animationDelay} from "../../utils/utils";
-import {swap} from "../../utils/utils";
-import {getState} from "./utils/utils";
+import {getReversingStringSteps, getState} from "./utils/utils";
 
 export const StringComponent: React.FC = () => {
 
@@ -19,29 +18,28 @@ export const StringComponent: React.FC = () => {
     setValue(event.target.value);
   };
 
-  const reverseString = async () => {
+  const printReverseString = async () => {
     //отключаем кнопку
     setIsPending(true);
-    let tempArr = value.split('');
-    setArr([...tempArr]);
+    setArr([]);
     setCurrIndex(0);
-    for (let i = 0; i < Math.floor(tempArr.length / 2 ); i++) {
-      await animationDelay(1000);
-      let j = tempArr.length - 1 - i;
-      setCurrIndex(i+1);
-      swap(tempArr, i, j);
-      setArr([...tempArr]);
+    const tempArr = getReversingStringSteps(value);
+    for (const step of tempArr) {
+      setCurrIndex((prev) => prev+1)
+      setArr([...step]);
+      await animationDelay(500);
     }
-    //закрашиваем центр, если элементов было нечетное количество
-    setCurrIndex(Math.floor(tempArr.length / 2)+1);
+    setCurrIndex(Math.floor(tempArr[0].length / 2)+1);
     setIsPending(false);
   }
+
+
 
   return (
     <SolutionLayout title="Строка">
       <form className={styles.inputForm} onSubmit={e => {
         e.preventDefault()
-        reverseString();
+        printReverseString();
       }}>
         <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={11} isLimitText={true} disabled={isPending}/>
         <Button type={"submit"} text={"Развернуть"} isLoader={isPending}/>

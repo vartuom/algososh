@@ -5,6 +5,7 @@ import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
 import styles from "./fibonacci-page.module.css"
 import {animationDelay} from "../../utils/utils";
+import {getFibonacciNumbers} from "./utils/utils";
 
 export const FibonacciPage: React.FC = () => {
 
@@ -16,41 +17,26 @@ export const FibonacciPage: React.FC = () => {
         setValue(event.target.value);
     };
 
-    const getFibonacciNumbers = async (n: string) => {
+    const printFibonacciNumbers = async (n: string) => {
         const lastElement = parseInt(n);
         if (typeof lastElement === 'number' && lastElement > 0) {
             setValue("");
             setIsPending(true);
-            await animationDelay(500);
-            const tempArr = [1];
-            setArr([...tempArr]);
-            await animationDelay(500);
-            if (lastElement === 1) {
-                setIsPending(false);
-                return
-            }
-            tempArr.push(1);
-            setArr([...tempArr]);
-            await animationDelay(500);
-            if (lastElement === 2) {
-                setIsPending(false);
-                return
-            }
-            for (let i = 2; i < lastElement; i++) {
-                tempArr[i] = tempArr[i - 1] + tempArr[i - 2];
-                setArr([...tempArr]);
+            setArr([]);
+            const tempArr = getFibonacciNumbers(lastElement);
+            for (const number of tempArr) {
+                setArr((prev) => [...prev, number]);
                 await animationDelay(500);
             }
             setIsPending(false);
         }
     }
 
-
     return (
         <SolutionLayout title="Последовательность Фибоначчи">
             <form className={styles.inputForm} onSubmit={e => {
                 e.preventDefault()
-                getFibonacciNumbers(value);
+                printFibonacciNumbers(value);
             }}>
                 <Input value={value} onChange={onChange} placeholder={"Введите текст"} type={'number'} max={'20'}
                        isLimitText={true} disabled={isPending}/>
