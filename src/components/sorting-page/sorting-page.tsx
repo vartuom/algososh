@@ -48,7 +48,7 @@ export const SortingPage: React.FC = () => {
     }
 
     const makeSort = (direction: string) => {
-        const sortSteps = getBubbleSortSteps(randomArray.current, "123");
+        const sortSteps = getBubbleSortSteps(randomArray.current, "ASC");
         console.log(sortSteps);
 
         setAlgorithmSteps(sortSteps);

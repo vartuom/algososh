@@ -33,7 +33,6 @@ export function getSelectionSortSteps(sourceArray: Array<number>, direction: str
     const steps = [] as Array<Step>;
     for (let i = 0, l = sourceArray.length, k = l - 1; i < k; i++) {
         let indexMin = i;
-
         for (let j = i + 1; j < l; j++) {
             steps.push({
                 currentArray: [...sourceArray],
@@ -41,7 +40,6 @@ export function getSelectionSortSteps(sourceArray: Array<number>, direction: str
                 bIndex: j,
                 sortedIndexes: [...(steps[steps.length - 1]?.sortedIndexes || [])]
             });
-
             if (
                 direction === "ASC"
                     ? sourceArray[indexMin] > sourceArray[j]
@@ -50,22 +48,18 @@ export function getSelectionSortSteps(sourceArray: Array<number>, direction: str
                 indexMin = j;
             }
         }
-
         if (indexMin !== i) {
             [sourceArray[i], sourceArray[indexMin]] = [
                 sourceArray[indexMin],
                 sourceArray[i]
             ]
         }
-
         steps[steps.length - 1].sortedIndexes.push(i);
     }
-
     steps.push({
         currentArray: [...sourceArray],
         sortedIndexes: steps[steps.length - 1]?.sortedIndexes || []
     })
-
     return steps
 }
 
@@ -73,7 +67,6 @@ export function getBubbleSortSteps(sourceArray: Array<number>, direction: string
     const steps = [] as Array<Step>;
     let isElementSwapped;
     let iterationNumber = 0;
-
     do {
         isElementSwapped = false;
         for (let i = 0; i < sourceArray.length - 1 - iterationNumber; i++) {
@@ -93,10 +86,14 @@ export function getBubbleSortSteps(sourceArray: Array<number>, direction: string
                 bIndex: i + 1
             });
         }
-        steps[steps.length - 1].sortedIndexes.push(steps[steps.length - 1].bIndex);;
+        steps[steps.length - 1].sortedIndexes.push(steps[steps.length - 1].bIndex!);
         iterationNumber++
     } while (isElementSwapped)
-
+    steps[steps.length - 1] = {
+        ...steps[steps.length - 1],
+        aIndex: -1,
+        bIndex: -1
+    }
     return steps
 }
 
