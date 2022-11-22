@@ -1,4 +1,4 @@
-import React, {ChangeEvent, MouseEvent, useState} from "react";
+import React, {ChangeEvent, MouseEvent, useRef, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {Button} from "../ui/button/button";
@@ -8,7 +8,15 @@ import {ElementStates} from "../../types/element-states";
 import {Column} from "../ui/column/column";
 import {animationDelay} from "../../utils/utils";
 import {swap} from "../../utils/utils";
-import {generateRandomObjArray, getRandomNumber} from "./utils/utils";
+import {
+    generateRandomObjArray,
+    generateRandomNumArray,
+    getBubbleSortSteps,
+    getRandomNumber,
+    getSelectionSortSteps,
+    getColumnState,
+    Step
+} from "./utils/utils";
 
 interface IArrElement {
     value: number,
@@ -17,9 +25,17 @@ interface IArrElement {
 
 export const SortingPage: React.FC = () => {
 
+    const randomArray = useRef<number[]>(generateRandomNumArray(7))
+    const intervalId = useRef<NodeJS.Timeout>();
+
     const [arr, setArr] = useState([...generateRandomObjArray(getRandomNumber(3, 17))] as Array<IArrElement>);
     const [isPending, setIsPending] = useState("");
     const [isBubble, setIsBubble] = useState(false)
+
+    const [algorithmSteps, setAlgorithmSteps] = useState<Step[]>([
+        {currentArray: randomArray.current, sortedIndexes: []}
+    ])
+    const [currentAlgorithmStep, setCurrentAlgorithmStep] = useState(0);
 
     const handleRadioInput = (e: ChangeEvent<HTMLInputElement>) => {
         setIsBubble(e.target.value === "bubble" ? true : false);
@@ -31,8 +47,34 @@ export const SortingPage: React.FC = () => {
         setIsPending("")
     }
 
+    const makeSort = (direction: string) => {
+        const sortSteps = getBubbleSortSteps(randomArray.current, "123");
+        console.log(sortSteps);
+
+        setAlgorithmSteps(sortSteps);
+        setCurrentAlgorithmStep(0);
+
+        intervalId.current = setInterval(() => {
+            if (sortSteps.length) {
+                setCurrentAlgorithmStep((currentStep) => {
+                    const nextStep = currentStep + 1;
+
+                    if (nextStep > sortSteps.length - 1 && intervalId.current) {
+                        clearInterval(intervalId.current);
+                        randomArray.current = sortSteps[sortSteps.length - 1].currentArray;
+                        return currentStep
+                    }
+
+                    return nextStep
+                })
+            }
+        }, 500)
+    }
+
+
     const selectionSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
         setIsPending(isAscending ? "ASC" : "DESC");
+        console.log(getSelectionSortSteps([2,1,4,3,8], "ASC"))
         const arrLength = arr.length;
         for (let i = 0; i < arrLength; i++) {
             //индекс максимального или минимального элемента
@@ -61,6 +103,7 @@ export const SortingPage: React.FC = () => {
 
     const bubbleSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
         setIsPending(isAscending ? "ASC" : "DESC");
+        console.log(getBubbleSortSteps([2,1,4,3,8], "ASC"))
         const arrLength = arr.length;
         let left;
         let right;
@@ -100,7 +143,7 @@ export const SortingPage: React.FC = () => {
                         text={"По возрастанию"}
                         name={"ASC"}
                         sorting={Direction.Ascending}
-                        onClick={() => isBubble ? bubbleSort(arr, true) : selectionSort(arr, true)}
+                        onClick={() => makeSort("ASC")}
                         isLoader={isPending === "ASC" ? true : false}
                         extraClass={styles.btnNormal}
                     />
@@ -118,9 +161,21 @@ export const SortingPage: React.FC = () => {
                         disabled={isPending === "" ? false : true}/>
             </form>
             <div className={styles.columnsRow}>
-                {arr.map((element, index) => {
-                    return <Column index={element.value} state={element.state} key={index}/>
-                })}
+                {algorithmSteps.length !== 0 &&
+                    algorithmSteps[currentAlgorithmStep].currentArray.map(
+                        (currentNumber, index) => (
+                            <Column
+                                index={currentNumber}
+                                key={index}
+                                state={getColumnState(
+                                    index,
+                                    algorithmSteps.length-1,
+                                    currentAlgorithmStep,
+                                    algorithmSteps[currentAlgorithmStep]
+                                )}
+                            />
+                        )
+                    )}
             </div>
         </SolutionLayout>
     );
