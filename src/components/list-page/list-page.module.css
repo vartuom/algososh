@@ -1,0 +1,52 @@
+.circleRow {
+    padding-top: 100px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.circleWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.smallTop {
+    position: absolute;
+    top: -88px;
+    left: 12px;
+}
+
+.smallBottom {
+    position: absolute;
+    top: 112px;
+    left: 12px;
+}
+
+.inputForm {
+    display: flex;
+    justify-content: center;
+}
+
+.inputField {
+    width: 204px;
+}
+
+.btnNormal {
+    width: 175px
+}
+
+.btnWide {
+    width: 362px
+}
+
+.controlSet {
+    border: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 12px;
+    row-gap: 12px;
+    width: 952px;
+}

@@ -1,0 +1,28 @@
+.circleRow {
+    padding-top: 120px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.inputForm {
+    display: flex;
+    justify-content: center;
+}
+
+.controlSet {
+    display: flex;
+    gap: 12px;
+    max-width: 567px;
+    border: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.inputField {
+    width: 377px;
+}
+
+.clearBtn {
+    margin-left: 80px;
+}

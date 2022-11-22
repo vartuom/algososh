@@ -1,0 +1,32 @@
+.columnsRow {
+    padding-top: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 10px;
+}
+
+.inputForm {
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.radioSet {
+    display: flex;
+    gap: 40px;
+    border: none;
+}
+
+.buttonSet {
+    display: flex;
+    gap: 12px;
+    border: none;
+    margin: 0 80px 0 52px;
+}
+
+.btnNormal {
+    width: 204px
+}
