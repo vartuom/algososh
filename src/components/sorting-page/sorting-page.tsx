@@ -28,10 +28,8 @@ export const SortingPage: React.FC = () => {
     const randomArray = useRef<number[]>(generateRandomNumArray(7))
     const intervalId = useRef<NodeJS.Timeout>();
 
-    const [arr, setArr] = useState([...generateRandomObjArray(getRandomNumber(3, 17))] as Array<IArrElement>);
     const [isPending, setIsPending] = useState("");
     const [isBubble, setIsBubble] = useState(false)
-
     const [algorithmSteps, setAlgorithmSteps] = useState<Step[]>([
         {currentArray: randomArray.current, sortedIndexes: []}
     ])
@@ -43,28 +41,28 @@ export const SortingPage: React.FC = () => {
 
     const handleNewArrButton = () => {
         setIsPending("rand")
-        setArr([...generateRandomObjArray(getRandomNumber(3, 17))])
+        randomArray.current = generateRandomNumArray(7);
+        setAlgorithmSteps(
+            [{currentArray: randomArray.current, sortedIndexes: []}]
+        )
+        setCurrentAlgorithmStep(0);
         setIsPending("")
     }
 
     const makeSort = (direction: string) => {
         const sortSteps = getBubbleSortSteps(randomArray.current, "ASC");
         console.log(sortSteps);
-
         setAlgorithmSteps(sortSteps);
         setCurrentAlgorithmStep(0);
-
         intervalId.current = setInterval(() => {
             if (sortSteps.length) {
                 setCurrentAlgorithmStep((currentStep) => {
                     const nextStep = currentStep + 1;
-
                     if (nextStep > sortSteps.length - 1 && intervalId.current) {
                         clearInterval(intervalId.current);
                         randomArray.current = sortSteps[sortSteps.length - 1].currentArray;
                         return currentStep
                     }
-
                     return nextStep
                 })
             }
@@ -151,7 +149,7 @@ export const SortingPage: React.FC = () => {
                         text={"По убыванию"}
                         name={"DESC"}
                         sorting={Direction.Descending}
-                        onClick={() => isBubble ? bubbleSort(arr, false) : selectionSort(arr, false)}
+                        onClick={() => makeSort("DESC")}
                         isLoader={isPending === "DESC" ? true : false}
                         extraClass={styles.btnNormal}
                     />
