@@ -4,7 +4,7 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
 import styles from "./string.module.css"
-import {animationDelay} from "../../utils/utils";
+import {animationDelayWithAbort} from "../../utils/utils";
 import {getReversingStringSteps, getState} from "./utils/utils";
 
 export const StringComponent: React.FC = () => {
@@ -13,6 +13,9 @@ export const StringComponent: React.FC = () => {
   const [arr, setArr] = useState([] as Array<string>);
   const [currIndex, setCurrIndex] = useState(0);
   const [isPending, setIsPending] = useState(false);
+
+  const controller = new AbortController();
+  const signal = controller.signal;
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -27,13 +30,11 @@ export const StringComponent: React.FC = () => {
     for (const step of tempArr) {
       setCurrIndex((prev) => prev+1)
       setArr([...step]);
-      await animationDelay(500);
+      await animationDelayWithAbort(500, null, signal);
     }
     setCurrIndex(Math.floor(tempArr[0].length / 2)+1);
     setIsPending(false);
   }
-
-
 
   return (
     <SolutionLayout title="Строка">

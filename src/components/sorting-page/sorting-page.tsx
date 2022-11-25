@@ -1,126 +1,115 @@
-import React, {ChangeEvent, MouseEvent, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {Button} from "../ui/button/button";
 import styles from "./sorting-page.module.css"
 import {Direction} from "../../types/direction";
-import {ElementStates} from "../../types/element-states";
 import {Column} from "../ui/column/column";
-import {animationDelay} from "../../utils/utils";
-import {swap} from "../../utils/utils";
-import {generateRandomObjArray, getRandomNumber} from "./utils/utils";
-
-interface IArrElement {
-    value: number,
-    state: ElementStates
-}
+import {
+    generateRandomNumArray,
+    getBubbleSortSteps,
+    getSelectionSortSteps,
+    getColumnState,
+    Step, getRandomNumber
+} from "./utils/utils";
 
 export const SortingPage: React.FC = () => {
 
-    const [arr, setArr] = useState([...generateRandomObjArray(getRandomNumber(3, 17))] as Array<IArrElement>);
-    const [isPending, setIsPending] = useState("");
+    const randomArray = useRef<number[]>(generateRandomNumArray(getRandomNumber(3, 17)))
+    const intervalId = useRef<NodeJS.Timeout>();
+
     const [isBubble, setIsBubble] = useState(false)
+    const [sortDirection, setSortDirection] = useState("ASC");
+    const [algorithmSteps, setAlgorithmSteps] = useState<Step[]>([
+        {currentArray: randomArray.current, sortedIndexes: []}
+    ])
+    const [currentAlgorithmStep, setCurrentAlgorithmStep] = useState(0);
+    const isPending = currentAlgorithmStep < algorithmSteps.length - 1;
 
     const handleRadioInput = (e: ChangeEvent<HTMLInputElement>) => {
         setIsBubble(e.target.value === "bubble" ? true : false);
     }
 
     const handleNewArrButton = () => {
-        setIsPending("rand")
-        setArr([...generateRandomObjArray(getRandomNumber(3, 17))])
-        setIsPending("")
+        randomArray.current = generateRandomNumArray(getRandomNumber(3, 17));
+        setAlgorithmSteps(
+            [{currentArray: randomArray.current, sortedIndexes: []}]
+        )
+        setCurrentAlgorithmStep(0);
     }
 
-    const selectionSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
-        setIsPending(isAscending ? "ASC" : "DESC");
-        const arrLength = arr.length;
-        for (let i = 0; i < arrLength; i++) {
-            //индекс максимального или минимального элемента
-            //в зависимости от направления сортировки
-            let selectedIndex = i;
-            arr[selectedIndex].state = ElementStates.Changing;
-            for (let j = i + 1; j < arrLength; j++) {
-                arr[j].state = ElementStates.Changing;
-                setArr([...arr]);
-                await animationDelay(500);
-                if (isAscending ? arr[j].value < arr[selectedIndex].value : arr[j].value > arr[selectedIndex].value) {
-                    selectedIndex = j;
-                    arr[j].state = ElementStates.Changing;
-                    arr[selectedIndex].state = i === selectedIndex ? ElementStates.Changing : ElementStates.Default;
-                }
-                if (j !== selectedIndex) arr[j].state = ElementStates.Default;
-                setArr([...arr]);
-            }
-            swap(arr, selectedIndex, i);
-            arr[selectedIndex].state = ElementStates.Default;
-            arr[i].state = ElementStates.Modified;
-            setArr([...arr]);
+    const makeSort = (direction: string) => {
+        setSortDirection(direction);
+        let sortSteps: Array<Step>;
+        if (isBubble) {
+            sortSteps = getBubbleSortSteps(randomArray.current, direction);
+        } else {
+            sortSteps = getSelectionSortSteps(randomArray.current, direction);
         }
-        setIsPending("");
-    };
-
-    const bubbleSort = async (arr: Array<IArrElement>, isAscending: boolean) => {
-        setIsPending(isAscending ? "ASC" : "DESC");
-        const arrLength = arr.length;
-        let left;
-        let right;
-        for (let i = 0; i < arrLength; i++) {
-            for (let j = 0; j < arrLength - i - 1; j++) {
-                left = arr[j].value;
-                right = arr[j + 1].value;
-                arr[j].state = ElementStates.Changing;
-                arr[j + 1].state = ElementStates.Changing;
-                setArr([...arr]);
-                await animationDelay(500);
-                if (isAscending ? left > right : left < right) {
-                    arr[j].value = right;
-                    arr[j + 1].value = left;
-                }
-                arr[j].state = ElementStates.Default;
-                if (arr[j + 1]) arr[j + 1].state = ElementStates.Default;
-                setArr([...arr]);
+        setAlgorithmSteps(sortSteps);
+        setCurrentAlgorithmStep(0);
+        intervalId.current = setInterval(() => {
+            if (sortSteps.length) {
+                setCurrentAlgorithmStep((currentStep) => {
+                    const nextStep = currentStep + 1;
+                    if (nextStep > sortSteps.length - 1 && intervalId.current) {
+                        clearInterval(intervalId.current);
+                        randomArray.current = sortSteps[sortSteps.length - 1].currentArray;
+                        return currentStep
+                    }
+                    return nextStep
+                })
             }
-            arr[arrLength - i - 1].state = ElementStates.Modified;
-            setArr([...arr])
-        }
-        setIsPending("");
+        }, 500)
     }
 
     return (
         <SolutionLayout title="Сортировка массива">
             <form className={styles.inputForm}>
                 <fieldset className={styles.radioSet}>
-                    <RadioInput label={"Выбор"} disabled={isPending === "" ? false : true} value={"select"}
+                    <RadioInput label={"Выбор"} disabled={isPending} value={"select"}
                                 checked={!isBubble} onChange={handleRadioInput}/>
-                    <RadioInput label={"Пузырек"} disabled={isPending === "" ? false : true} value={"bubble"}
+                    <RadioInput label={"Пузырек"} disabled={isPending} value={"bubble"}
                                 checked={isBubble} onChange={handleRadioInput}/>
                 </fieldset>
-                <fieldset className={styles.buttonSet} disabled={arr.length === 0 ? true : isPending === "" ? false : true}>
+                <fieldset className={styles.buttonSet} disabled={isPending}>
                     <Button
                         text={"По возрастанию"}
                         name={"ASC"}
                         sorting={Direction.Ascending}
-                        onClick={() => isBubble ? bubbleSort(arr, true) : selectionSort(arr, true)}
-                        isLoader={isPending === "ASC" ? true : false}
+                        onClick={() => makeSort("ASC")}
+                        isLoader={sortDirection === "ASC" && isPending}
                         extraClass={styles.btnNormal}
                     />
                     <Button
                         text={"По убыванию"}
                         name={"DESC"}
                         sorting={Direction.Descending}
-                        onClick={() => isBubble ? bubbleSort(arr, false) : selectionSort(arr, false)}
-                        isLoader={isPending === "DESC" ? true : false}
+                        onClick={() => makeSort("DESC")}
+                        isLoader={sortDirection !== "ASC" && isPending}
                         extraClass={styles.btnNormal}
                     />
                 </fieldset>
                 <Button text={"Новый массив"} onClick={handleNewArrButton}
-                        isLoader={isPending === "rand" ? true : false} extraClass={styles.btnNormal}
-                        disabled={isPending === "" ? false : true}/>
+                        extraClass={styles.btnNormal}
+                        disabled={isPending}/>
             </form>
             <div className={styles.columnsRow}>
-                {arr.map((element, index) => {
-                    return <Column index={element.value} state={element.state} key={index}/>
-                })}
+                {algorithmSteps.length !== 0 &&
+                    algorithmSteps[currentAlgorithmStep].currentArray.map(
+                        (currentNumber, index) => (
+                            <Column
+                                index={currentNumber}
+                                key={index}
+                                state={getColumnState(
+                                    index,
+                                    algorithmSteps.length - 1,
+                                    currentAlgorithmStep,
+                                    algorithmSteps[currentAlgorithmStep]
+                                )}
+                            />
+                        )
+                    )}
             </div>
         </SolutionLayout>
     );

@@ -6,7 +6,7 @@ import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 import {Queue} from "./queue";
-import {animationDelay} from "../../utils/utils";
+import {animationDelayWithAbort} from "../../utils/utils";
 
 const queue = new Queue<string>(7);
 
@@ -18,6 +18,9 @@ export const QueuePage: React.FC = () => {
     const [isHighlight, setIsHighlight] = useState(false);
     const [curr, setCurr] = useState(-1);
     const [tail, setTail] = useState(queue.getTail())
+
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
@@ -31,7 +34,7 @@ export const QueuePage: React.FC = () => {
         setQueueArr([...queue.getQueue()]);
         setValue('')
         setIsHighlight(true)
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setCurr(-1)
         setIsHighlight(false);
         setIsPending("");
@@ -42,7 +45,7 @@ export const QueuePage: React.FC = () => {
         setIsPending("dequeue");
         setIsHighlight(true)
         setCurr(queue.getHead() % queue.getSize());
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setIsHighlight(false);
         queue.dequeue();
         setQueueArr([...queue.getQueue()]);

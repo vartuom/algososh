@@ -4,7 +4,7 @@ import styles from "./stack-page.module.css";
 import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Stack} from "../stack-page/stack";
-import {animationDelay} from "../../utils/utils";
+import {animationDelayWithAbort} from "../../utils/utils";
 import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 
@@ -17,6 +17,9 @@ export const StackPage: React.FC = () => {
     const [stackArr, setStackArr] = useState([] as Array<string>);
     const [isHighlight, setIsHighlight] = useState(false);
 
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
     };
@@ -27,7 +30,7 @@ export const StackPage: React.FC = () => {
         setIsHighlight(true);
         setStackArr(stack.getStack());
         setValue('');
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setIsHighlight(false);
         setIsPending("");
     }
@@ -35,7 +38,7 @@ export const StackPage: React.FC = () => {
     const pop = async () => {
         setIsPending("pop");
         setIsHighlight(true);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         stack.pop();
         setStackArr(stack.getStack());
         setValue('');

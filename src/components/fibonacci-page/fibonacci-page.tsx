@@ -4,7 +4,7 @@ import {Input} from "../ui/input/input";
 import {Button} from "../ui/button/button";
 import {Circle} from "../ui/circle/circle";
 import styles from "./fibonacci-page.module.css"
-import {animationDelay} from "../../utils/utils";
+import {animationDelayWithAbort} from "../../utils/utils";
 import {getFibonacciNumbers} from "./utils/utils";
 
 export const FibonacciPage: React.FC = () => {
@@ -12,6 +12,9 @@ export const FibonacciPage: React.FC = () => {
     const [value, setValue] = useState('');
     const [arr, setArr] = useState([] as Array<number>);
     const [isPending, setIsPending] = useState(false);
+
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
@@ -26,7 +29,7 @@ export const FibonacciPage: React.FC = () => {
             const tempArr = getFibonacciNumbers(lastElement);
             for (const number of tempArr) {
                 setArr((prev) => [...prev, number]);
-                await animationDelay(500);
+                await animationDelayWithAbort(500, null, signal)
             }
             setIsPending(false);
         }
