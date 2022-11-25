@@ -26,13 +26,6 @@ export const SortingPage: React.FC = () => {
     const [currentAlgorithmStep, setCurrentAlgorithmStep] = useState(0);
     const isPending = currentAlgorithmStep < algorithmSteps.length - 1;
 
-    useEffect(() => {
-        return () => {
-            if (intervalId.current)
-                clearInterval(intervalId.current)
-        }
-    })
-
     const handleRadioInput = (e: ChangeEvent<HTMLInputElement>) => {
         setIsBubble(e.target.value === "bubble" ? true : false);
     }

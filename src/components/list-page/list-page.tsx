@@ -7,7 +7,7 @@ import {Circle} from "../ui/circle/circle";
 import {ElementStates} from "../../types/element-states";
 import {LinkedList} from "./linkedList";
 import {ArrowIcon} from "../ui/icons/arrow-icon";
-import {animationDelay} from "../../utils/utils";
+import {animationDelayWithAbort} from "../../utils/utils";
 import {generateRandomNumArray} from "./utils/utils";
 
 interface ISmallElement {
@@ -37,6 +37,9 @@ export const ListPage: React.FC = () => {
     const [isPending, setIsPending] = useState("");
     const [listArr, setListArr] = useState(initListArr);
 
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
     };
@@ -57,7 +60,7 @@ export const ListPage: React.FC = () => {
         }
         setListArr([...listArr]);
         setValue("");
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr[listArr.length - 1] = {
             ...listArr[listArr.length - 1],
             smallElement: undefined
@@ -69,7 +72,7 @@ export const ListPage: React.FC = () => {
             state: ElementStates.Modified
         })
         setListArr([...listArr]);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr[listArr.length - 1].state = ElementStates.Default;
         setListArr([...listArr]);
         setIsPending("");
@@ -87,7 +90,7 @@ export const ListPage: React.FC = () => {
         }
         list.deleteTail();
         setListArr([...listArr]);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr.pop();
         setListArr([...listArr]);
         setIsPending("");
@@ -102,7 +105,7 @@ export const ListPage: React.FC = () => {
         }
         setValue("");
         setListArr([...listArr]);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr[0].smallElement = undefined;
         listArr.unshift({
             ...listArr[0],
@@ -110,7 +113,7 @@ export const ListPage: React.FC = () => {
             state: ElementStates.Modified
         });
         setListArr([...listArr]);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr[0].state = ElementStates.Default;
         setListArr([...listArr])
         setIsPending("");
@@ -128,7 +131,7 @@ export const ListPage: React.FC = () => {
         }
         list.deleteHead();
         setListArr([...listArr]);
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr.shift();
         setListArr([...listArr]);
         setIsPending("");
@@ -152,7 +155,7 @@ export const ListPage: React.FC = () => {
                     type: "top"
                 }
             }
-            await animationDelay(500);
+            await animationDelayWithAbort(500, null, signal);
             setListArr([...listArr]);
             if (i > 0) {
                 listArr[i - 1] = {
@@ -162,7 +165,7 @@ export const ListPage: React.FC = () => {
             }
             setListArr([...listArr]);
         }
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         listArr[index] = {
             ...listArr[index],
             state: ElementStates.Default,
@@ -178,7 +181,7 @@ export const ListPage: React.FC = () => {
         listArr.forEach((item) => {
             item.state = ElementStates.Default;
         })
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setListArr([...listArr]);
         setValue("");
         setIndexValue("");
@@ -194,7 +197,7 @@ export const ListPage: React.FC = () => {
                 ...listArr[i],
                 state: ElementStates.Changing,
             }
-            await animationDelay(500);
+            await animationDelayWithAbort(500, null, signal);
             setListArr([...listArr]);
         }
         listArr[index] = {
@@ -205,7 +208,7 @@ export const ListPage: React.FC = () => {
                 type: "bottom"
             }
         }
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setListArr([...listArr]);
         listArr.splice(index, 1)
         listArr[index - 1] = {
@@ -214,12 +217,12 @@ export const ListPage: React.FC = () => {
             state: ElementStates.Modified,
             smallElement: undefined
         }
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setListArr([...listArr]);
         listArr.forEach((elem) => {
             elem.state = ElementStates.Default;
         })
-        await animationDelay(500);
+        await animationDelayWithAbort(500, null, signal);
         setListArr([...listArr]);
         setIndexValue("");
         setIsPending("");

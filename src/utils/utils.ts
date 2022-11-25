@@ -1,7 +1,7 @@
-//задержка рендеринга
-export const animationDelay = (ms: number) => new Promise<void>(
+
+/*export const animationDelay = (ms: number) => new Promise<void>(
     resolve => setTimeout(resolve, ms)
-);
+);*/
 
 export const animationDelayWithAbort = (ms: number, value: string | null, signal: AbortSignal) => {
     return new Promise((resolve, reject) => {

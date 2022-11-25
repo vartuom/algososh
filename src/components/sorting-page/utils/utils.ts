@@ -1,4 +1,5 @@
 import {ElementStates} from "../../../types/element-states";
+import {swap} from "../../../utils/utils";
 
 export interface Step {
     currentArray: Array<number>,
@@ -20,58 +21,56 @@ export const generateRandomNumArray = (length: number) => {
     );
 }
 
-export function getSelectionSortSteps(sourceArray: Array<number>, direction: string,) {
+export function getSelectionSortSteps(arr: Array<number>, direction: string) {
     const steps = [] as Array<Step>;
-    for (let i = 0, l = sourceArray.length, k = l - 1; i < k; i++) {
+    for (let i = 0; i < arr.length - 1; i++) {
         let indexMin = i;
-        for (let j = i + 1; j < l; j++) {
+        for (let j = i + 1; j < arr.length - 1; j++) {
             steps.push({
-                currentArray: [...sourceArray],
+                currentArray: [...arr],
                 aIndex: i,
                 bIndex: j,
                 sortedIndexes: [...(steps[steps.length - 1]?.sortedIndexes || [])]
             });
             if (
                 direction === "ASC"
-                    ? sourceArray[indexMin] > sourceArray[j]
-                    : sourceArray[indexMin] < sourceArray[j]
+                    ? arr[indexMin] > arr[j]
+                    : arr[indexMin] < arr[j]
             ) {
                 indexMin = j;
             }
         }
         if (indexMin !== i) {
-            [sourceArray[i], sourceArray[indexMin]] = [
-                sourceArray[indexMin],
-                sourceArray[i]
+            [arr[i], arr[indexMin]] = [
+                arr[indexMin],
+                arr[i]
             ]
         }
         steps[steps.length - 1].sortedIndexes.push(i);
     }
     steps.push({
-        currentArray: [...sourceArray],
+        currentArray: [...arr],
         sortedIndexes: steps[steps.length - 1]?.sortedIndexes || []
     })
     return steps
 }
 
-export function getBubbleSortSteps(sourceArray: Array<number>, direction: string,) {
+export function getBubbleSortSteps(arr: Array<number>, direction: string,) {
     const steps = [] as Array<Step>;
     let isElementSwapped;
     let iterationNumber = 0;
     do {
         isElementSwapped = false;
-        for (let i = 0; i < sourceArray.length - 1 - iterationNumber; i++) {
+        for (let i = 0; i < arr.length - 1 - iterationNumber; i++) {
             if (direction === "ASC"
-                ? sourceArray[i] > sourceArray[i + 1]
-                : sourceArray[i] < sourceArray[i + 1]
+                ? arr[i] > arr[i + 1]
+                : arr[i] < arr[i + 1]
             ) {
-                let tmp = sourceArray[i];
-                sourceArray[i] = sourceArray[i + 1];
-                sourceArray[i + 1] = tmp;
+                swap(arr, i, i+1)
                 isElementSwapped = true;
             }
             steps.push({
-                currentArray: [...sourceArray],
+                currentArray: [...arr],
                 sortedIndexes: [...(steps[steps.length - 1]?.sortedIndexes || [])],
                 aIndex: i,
                 bIndex: i + 1
