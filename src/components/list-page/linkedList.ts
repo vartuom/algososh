@@ -77,7 +77,7 @@ export class LinkedList<T> implements ILinkedList<T> {
         } else {
             let current = this.head;
             let currentIndex = 0;
-            while (currentIndex != (index - 1) && current.next) {
+            while (currentIndex !== (index - 1) && current.next) {
                 current = current.next;
                 currentIndex++;
             }

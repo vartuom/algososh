@@ -25,7 +25,7 @@ export function getSelectionSortSteps(arr: Array<number>, direction: string) {
     const steps = [] as Array<Step>;
     for (let i = 0; i < arr.length - 1; i++) {
         let indexMin = i;
-        for (let j = i + 1; j < arr.length - 1; j++) {
+        for (let j = i + 1; j < arr.length; j++) {
             steps.push({
                 currentArray: [...arr],
                 aIndex: i,
