@@ -24,13 +24,13 @@ export const StringComponent: React.FC = () => {
   const printReverseString = async () => {
     //отключаем кнопку
     setIsPending(true);
-    setArr([]);
+    setArr(value.split(''));
     setCurrIndex(0);
     const tempArr = getReversingStringSteps(value);
     for (const step of tempArr) {
+      await animationDelayWithAbort(500, null, signal);
       setCurrIndex((prev) => prev+1)
       setArr([...step]);
-      await animationDelayWithAbort(500, null, signal);
     }
     setCurrIndex(Math.floor(tempArr[0].length / 2)+1);
     setIsPending(false);
@@ -43,7 +43,7 @@ export const StringComponent: React.FC = () => {
         printReverseString();
       }}>
         <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={11} isLimitText={true} disabled={isPending}/>
-        <Button type={"submit"} text={"Развернуть"} isLoader={isPending}/>
+        <Button type={"submit"} text={"Развернуть"} isLoader={isPending} disabled={value.trim().length > 0 ? false : true}/>
       </form>
       <div className={styles.circleRow}>
         {arr.map((char, index, array) => (

@@ -58,7 +58,10 @@ export function getSelectionSortSteps(arr: Array<number>, direction: string) {
 export function getBubbleSortSteps(arr: Array<number>, direction: string,) {
     const steps = [] as Array<Step>;
     if (arr.length <= 1) return [{
-        currentArray: [...arr]
+        currentArray: [...arr],
+        sortedIndexes: [],
+        aIndex: 0,
+        bIndex: 0
     }];
     let isElementSwapped;
     let iterationNumber = 0;
