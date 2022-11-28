@@ -43,7 +43,7 @@ export const FibonacciPage: React.FC = () => {
             }}>
                 <Input value={value} onChange={onChange} placeholder={"Введите текст"} type={'number'} max={'20'}
                        isLimitText={true} disabled={isPending}/>
-                <Button type={"submit"} text={"Рассчитать"} isLoader={isPending}/>
+                <Button type={"submit"} text={"Рассчитать"} isLoader={isPending} disabled={value.trim().length === 0}/>
             </form>
             <div className={styles.circleRow}>
                 {arr.map((char, index) => (
