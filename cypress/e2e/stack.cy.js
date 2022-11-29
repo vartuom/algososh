@@ -10,7 +10,7 @@ describe('stack page test', () => {
         cy.get('@button').should('be.disabled')
     })
 
-    it('checks animation of pushing elements in stack', () => {
+    it('checks animation of adding/removing elements from stack', () => {
         cy.visit("http://localhost:3000/stack")
         //push 1
         cy.get('input').type('1')
