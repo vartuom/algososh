@@ -1,5 +1,5 @@
 describe('fibonacci page test', () => {
-    it('checks whether button disabled if input is void', () => {
+    it('checks whether button disabled or not when input is void', () => {
         cy.visit("http://localhost:3000/fibonacci")
         cy.contains('Рассчитать').as('button')
         cy.get('input').should('be.empty')

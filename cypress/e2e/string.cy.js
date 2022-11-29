@@ -1,5 +1,5 @@
 describe('reverse string page test', () => {
-    it('checks whether button disabled if input is void', () => {
+    it('checks whether button disabled or not when input is void', () => {
         cy.visit("http://localhost:3000/recursion")
         cy.contains('Развернуть').as('button')
         cy.get('input').should('be.empty')
