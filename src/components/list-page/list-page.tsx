@@ -234,7 +234,7 @@ export const ListPage: React.FC = () => {
                 e.preventDefault()
             }}>
                 <fieldset className={styles.controlSet} disabled={isPending === "" ? false : true}>
-                    <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
+                    <Input name={"value"} value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                            isLimitText={true} extraClass={styles.inputField}/>
                     <Button text={"Добавить в head"} name={"prepend"} onClick={prepend}
                             extraClass={styles.btnNormal} isLoader={isPending === "prepend" ? true : false}
@@ -248,7 +248,7 @@ export const ListPage: React.FC = () => {
                     <Button text={"Удалить из tail"} name={"pop"} onClick={pop}
                             extraClass={styles.btnNormal} isLoader={isPending === "pop" ? true : false}
                             disabled={list.getSize() === 0 ? true : false}/>
-                    <Input value={indexValue} onChange={onChangeIndex} placeholder={"Введите индекс"}
+                    <Input name={"index"} value={indexValue} onChange={onChangeIndex} placeholder={"Введите индекс"}
                            extraClass={styles.inputField}/>
                     <Button text={"Добавить по индексу"} onClick={addAtIndex}
                             extraClass={styles.btnWide} isLoader={isPending === "addAtIndex" ? true : false}
