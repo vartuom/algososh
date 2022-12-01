@@ -267,8 +267,8 @@ export const ListPage: React.FC = () => {
                                 index={index}
                                 letter={item.value}
                                 state={item.state}
-                                head={index === 0 ? "head" : ""}
-                                tail={index === list.getSize() - 1 ? "tail" : ""}
+                                head={index === 0 && !item.smallElement ? "head" : ""}
+                                tail={index === array.length - 1 && !item.smallElement ? "tail" : ""}
                             />
                             {index < array.length - 1 && <ArrowIcon fill={"#0032FF"}/>}
                             {item.smallElement && <div
