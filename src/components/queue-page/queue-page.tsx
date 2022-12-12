@@ -63,7 +63,7 @@ export const QueuePage: React.FC = () => {
                     <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                            isLimitText={true} extraClass={styles.inputField}/>
                     <Button text={"Добавить"} isLoader={isPending === "enqueue" ? true : false}
-                            disabled={queue.getSize() == queue.getLength() ? true : false} onClick={enqueue}/>
+                            disabled={value.trim().length === 0 || queue.getSize() === queue.getLength() ? true : false} onClick={enqueue}/>
                     <Button text={"Удалить"} isLoader={isPending === "dequeue" ? true : false}
                             disabled={queue.getLength() === 0 ? true : false} onClick={dequeue}/>
                     <Button text={"Очистить"} disabled={queue.getLength() === 0 ? true : false} onClick={() => {

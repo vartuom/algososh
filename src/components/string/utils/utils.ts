@@ -14,10 +14,11 @@ export const getState = (index: number, currIndex: number, arr: Array<string>) =
 export const getReversingStringSteps = (sourceString: string) => {
     const stringArr = sourceString.split('');
     const stepsArr = [];
+    if (stringArr.length <= 1) return [[...stringArr]];
     for (let i = 0; i < Math.floor(stringArr.length / 2 ); i++) {
-        stepsArr[i] = stringArr;
         let j = stringArr.length - 1 - i;
-        swap(stringArr, i, j);
+        const step = swap(stringArr, i, j);
+        stepsArr.push([...step]);
     }
     return stepsArr;
 };

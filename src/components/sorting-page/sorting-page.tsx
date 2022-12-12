@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useRef, useState} from "react";
 import {SolutionLayout} from "../ui/solution-layout/solution-layout";
 import {RadioInput} from "../ui/radio-input/radio-input";
 import {Button} from "../ui/button/button";

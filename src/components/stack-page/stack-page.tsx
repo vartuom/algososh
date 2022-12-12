@@ -54,7 +54,7 @@ export const StackPage: React.FC = () => {
                 <fieldset className={styles.controlSet} disabled={isPending === "" ? false : true}>
                     <Input value={value} onChange={onChange} placeholder={"Введите текст"} maxLength={4}
                            isLimitText={true} extraClass={styles.inputField}/>
-                    <Button text={"Добавить"} isLoader={isPending === "push" ? true : false} onClick={push}/>
+                    <Button text={"Добавить"} isLoader={isPending === "push" ? true : false} onClick={push} disabled={value.trim().length === 0}/>
                     <Button text={"Удалить"} isLoader={isPending === "pop" ? true : false} onClick={pop}/>
                     <Button text={"Очистить"} onClick={() => {
                         stack.clear();
